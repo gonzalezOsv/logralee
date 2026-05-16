@@ -72,6 +72,12 @@ nav{
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border-soft);
   box-shadow:0 1px 0 rgba(255,45,120,0.06);
+  transition:background .4s cubic-bezier(0.16,1,0.3,1),box-shadow .4s cubic-bezier(0.16,1,0.3,1),border-color .4s;
+}
+nav.is-scrolled{
+  background:rgba(255,251,254,0.94);
+  box-shadow:0 8px 32px rgba(28,10,36,0.06);
+  border-bottom-color:rgba(0,0,0,0.05);
 }
 .nav-logo{
   font-family:var(--font-serif);font-size:22px;font-weight:800;font-style:italic;
@@ -150,15 +156,32 @@ nav{
   animation:fadeUp .6s .16s ease both;
 }
 .hero-meaning{
-  font-family:var(--font-mono);font-size:12px;
-  letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text-faint);font-style:italic;margin-bottom:48px;
+  position:relative;
+  z-index:1;
+  width:min(560px,94vw);
+  margin-bottom:48px;
   animation:fadeUp .6s .2s ease both;
 }
+.hero-brand-name{
+  font-family:var(--font-serif);
+  font-size:clamp(28px,5.4vw,44px);
+  font-weight:800;font-style:italic;
+  letter-spacing:-.025em;line-height:1.08;margin-bottom:10px;
+  background:var(--grad-text);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-meaning-gloss{
+  font-family:var(--font-mono);font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-faint);font-style:italic;
+}
+.hero-meaning-gloss em{font-style:italic;color:var(--text-dim)}
 
 .email-wrap{
   display:flex;flex-direction:column;align-items:center;gap:12px;
   animation:fadeUp .6s .26s ease both;
+  position:relative;
+  z-index:1;
 }
 .email-form{
   display:flex;
@@ -191,6 +214,8 @@ nav{
   display:flex;justify-content:center;align-items:flex-end;
   gap:20px;margin-top:72px;
   animation:fadeUp .9s .35s ease both;
+  position:relative;
+  z-index:1;
 }
 .phone-shell{
   background:#fff;border-radius:38px;
@@ -530,7 +555,7 @@ footer{
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .72s cubic-bezier(0.16,1,0.3,1),transform .72s cubic-bezier(0.16,1,0.3,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.1s}.d2{transition-delay:.18s}.d3{transition-delay:.26s}.d4{transition-delay:.34s}
 
@@ -746,6 +771,7 @@ footer{
   .rm-item::before{top:8px;left:-9px}
   .how-steps::before{display:none}
   .phone-trio{gap:10px}
+  .hero{padding:120px 20px 64px}
   .tour-grid{grid-template-columns:repeat(2,1fr);gap:24px;max-width:100%}
   .engine-grid{grid-template-columns:1fr;gap:36px}
   .ps{width:145px}.ps.mid-sz{width:165px}
@@ -772,7 +798,7 @@ footer{
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="hero">
   <div class="eyebrow"><span class="eyebrow-dot"></span>Beta now live on Android · iOS soon</div>
 
   <h1 class="hero-headline">
@@ -780,7 +806,11 @@ footer{
   </h1>
 
   <p class="hero-sub">Gym, cardio, walks, yoga — all of it. Logralee is where you keep the story without the pressure.</p>
-  <p class="hero-meaning">lograr &nbsp;·&nbsp; Spanish &nbsp;·&nbsp; <em>to achieve, to accomplish</em></p>
+
+  <div class="hero-meaning" aria-label="Logralee means to achieve">
+    <div class="hero-brand-name">Logralee</div>
+    <p class="hero-meaning-gloss">lograr &nbsp;·&nbsp; <em>to achieve, to accomplish</em></p>
+  </div>
 
   <div class="email-wrap" id="waitlist">
     <form class="email-form" onsubmit="sub(event,'e1','m1')">
@@ -1432,6 +1462,20 @@ const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
 },{threshold:0.08});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+(function(){
+  const nav=document.querySelector('nav');
+  let raf=0;
+  function navScroll(){
+    raf=0;
+    if(!nav) return;
+    const on=window.scrollY>12;
+    if(on!==nav.classList.contains('is-scrolled')) nav.classList.toggle('is-scrolled', on);
+  }
+  function sched(){ if(!raf) raf=requestAnimationFrame(navScroll); }
+  window.addEventListener('scroll', sched, {passive:true});
+  navScroll();
+})();
 
 // animate waitlist count up
 const wl=document.getElementById('wl-count');
