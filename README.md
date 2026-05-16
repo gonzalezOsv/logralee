@@ -1,12 +1,12 @@
-# Logralee landing page
+# Logralee
 
-Static marketing site for [Logralee](https://github.com/gonzalezOsv) — deployable on **GitHub Pages**.
+Promotional landing page for the **Logralee** app — static **GitHub Pages** site (this repo).
 
 ## GitHub Pages
 
-After push, enable **Settings → Pages → Build and deployment → Deploy from branch** → branch `main`, folder `/ (root)`.
+**Settings → Pages → Deploy from branch** → `main` / `/ (root)`.
 
-Live URL: `https://gonzalezOsv.github.io/logralee-site/` (if the repo name is `logralee-site`).
+Live site: **https://gonzalezosv.github.io/logralee/**
 
 ## Assets
 
