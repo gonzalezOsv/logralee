@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Logralee is a local-first fitness journal for strength, cardio, walks, and yoga. Log sessions, celebrate PRs, and share Moments — Android beta available.">
+<title>Logralee — A journal for how you actually move.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --pink:        #FF2D78;
+  --pink-mid:    #FF6FA3;
+  --pink-pale:   #FFE4EF;
+  --pink-faint:  #FFF0F6;
+  --purple:      #9B5DE5;
+  --purple-mid:  #C084FC;
+  --purple-pale: #F0E6FF;
+  --gold:        #F59E0B;
+  --gold-light:  #FEF3C7;
+
+  --bg:          #FFFBFE;
+  --bg2:         #FFF5FA;
+  --bg3:         #F8F0FF;
+  --surface:     #FFFFFF;
+  --surface2:    #FFF8FC;
+
+  --border:      rgba(155,93,229,0.1);
+  --border-pink: rgba(255,45,120,0.2);
+  --border-soft: rgba(0,0,0,0.06);
+
+  --text:        #1C0A24;
+  --text-mid:    #4A2860;
+  --text-dim:    #7A5890;
+  --text-faint:  #B8A0C8;
+
+  --grad:        linear-gradient(135deg,#FF2D78,#9B5DE5);
+  --grad-soft:   linear-gradient(135deg,#FF6FA3,#C084FC);
+  --grad-text:   linear-gradient(135deg,#FF2D78 0%,#9B5DE5 100%);
+  --grad-bg:     linear-gradient(135deg,rgba(255,45,120,0.06),rgba(155,93,229,0.06));
+
+  --font-serif:  'Playfair Display', Georgia, serif;
+  --font-sans:   'DM Sans', sans-serif;
+  --font-mono:   'DM Mono', monospace;
+  --r:           20px;
+  --r-sm:        12px;
+
+  --shadow-sm:   0 2px 12px rgba(155,93,229,0.08);
+  --shadow-md:   0 8px 32px rgba(155,93,229,0.12);
+  --shadow-lg:   0 24px 64px rgba(155,93,229,0.16);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(155,93,229,0.08);
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-sans);
+  font-size:16px;line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:16px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,251,254,0.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-soft);
+  box-shadow:0 1px 0 rgba(255,45,120,0.06);
+}
+.nav-logo{
+  font-family:var(--font-serif);font-size:22px;font-weight:800;font-style:italic;
+  background:var(--grad-text);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-.01em;
+}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{
+  color:var(--text-dim);text-decoration:none;
+  font-size:14px;font-weight:500;transition:color .2s;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-pill{
+  background:var(--grad);color:#fff;
+  font-family:var(--font-sans);font-weight:600;font-size:13px;
+  padding:9px 22px;border-radius:999px;border:none;
+  cursor:pointer;text-decoration:none;
+  transition:opacity .2s,transform .2s,box-shadow .2s;
+  box-shadow:0 4px 16px rgba(255,45,120,0.3);
+}
+.nav-pill:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,45,120,0.4)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:140px 24px 80px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#FFF5FA 0%,#FFFBFE 60%);
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 800px 500px at 20% 0%,rgba(255,45,120,0.07) 0%,transparent 70%),
+    radial-gradient(ellipse 600px 400px at 80% 10%,rgba(155,93,229,0.06) 0%,transparent 70%),
+    radial-gradient(ellipse 500px 300px at 50% 100%,rgba(155,93,229,0.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--pink-pale);
+  border:1px solid rgba(255,45,120,0.2);
+  border-radius:999px;padding:5px 16px 5px 10px;
+  font-size:12px;font-weight:600;color:var(--pink);
+  letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:28px;
+  animation:fadeUp .6s ease both;
+}
+.eyebrow-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--pink);
+  animation:blink 2.4s ease infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+.hero-headline{
+  font-family:var(--font-serif);
+  font-size:clamp(46px,8vw,104px);
+  font-weight:900;font-style:italic;
+  line-height:.94;letter-spacing:-.03em;
+  color:var(--text);margin-bottom:28px;
+  animation:fadeUp .6s .08s ease both;
+}
+.hero-headline em{
+  font-style:normal;
+  background:var(--grad-text);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-sub{
+  font-size:clamp(16px,2vw,20px);
+  color:var(--text-dim);max-width:480px;
+  line-height:1.65;font-weight:300;margin-bottom:14px;
+  animation:fadeUp .6s .16s ease both;
+}
+.hero-meaning{
+  font-family:var(--font-mono);font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-faint);font-style:italic;margin-bottom:48px;
+  animation:fadeUp .6s .2s ease both;
+}
+
+.email-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  animation:fadeUp .6s .26s ease both;
+}
+.email-form{
+  display:flex;
+  background:#fff;
+  border:1.5px solid rgba(255,45,120,0.25);
+  border-radius:999px;padding:5px 5px 5px 22px;
+  width:min(420px,90vw);
+  box-shadow:0 4px 20px rgba(255,45,120,0.1);
+}
+.email-form input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font-family:var(--font-sans);font-size:14px;min-width:0;
+}
+.email-form input::placeholder{color:var(--text-faint)}
+.email-form button{
+  background:var(--grad);color:#fff;
+  font-family:var(--font-sans);font-weight:600;font-size:13px;
+  padding:11px 22px;border-radius:999px;border:none;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;transition:opacity .2s;
+}
+.email-form button:hover{opacity:.88}
+.hero-note{font-size:12px;color:var(--text-faint);display:inline-flex;align-items:center;gap:6px}
+.hero-note strong{color:var(--text-dim);font-weight:600}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#10B981;box-shadow:0 0 0 0 rgba(16,185,129,0.6);animation:pulse 2s ease infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,0.5)}70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+.success-msg{display:none;color:var(--pink);font-size:14px;font-weight:600}
+
+/* ── PHONE TRIO ── */
+.phone-trio{
+  display:flex;justify-content:center;align-items:flex-end;
+  gap:20px;margin-top:72px;
+  animation:fadeUp .9s .35s ease both;
+}
+.phone-shell{
+  background:#fff;border-radius:38px;
+  border:1px solid rgba(0,0,0,0.07);
+  overflow:hidden;flex-shrink:0;
+  box-shadow:0 8px 32px rgba(155,93,229,0.1),0 2px 8px rgba(0,0,0,0.06);
+}
+.phone-shell.mid{
+  border-color:rgba(255,45,120,0.2);
+  transform:translateY(-24px);
+  box-shadow:0 20px 60px rgba(155,93,229,0.2),0 4px 16px rgba(255,45,120,0.1),0 0 0 1px rgba(255,45,120,0.1);
+}
+.ps{width:220px;aspect-ratio:9/19.5;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.ps.mid-sz{width:250px}
+
+/* phone internals — cotton candy light theme */
+.ps-bg-light{background:linear-gradient(160deg,#FFF5FA,#FFFBFE)}
+.ps-bg-purple{background:linear-gradient(160deg,#F8F0FF,#FFFBFE)}
+.ps-top{padding:10px 14px 0;display:flex;justify-content:space-between;font-size:8px;font-weight:600;color:rgba(74,40,96,0.4)}
+.ps-body{padding:10px 12px 0;flex:1}
+.ps-greet-lbl{font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(74,40,96,0.4);margin-bottom:2px}
+.ps-greet-name{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.ps-streak{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:999px;font-size:8px;font-weight:700;margin-top:6px;
+  background:rgba(255,45,120,0.08);border:1px solid rgba(255,45,120,0.2);color:var(--pink);
+}
+.ps-card{
+  margin-top:9px;padding:10px 11px;border-radius:14px;
+  background:#fff;border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 2px 8px rgba(155,93,229,0.06);
+}
+.ps-card-lbl{font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(74,40,96,0.4);margin-bottom:3px}
+.ps-card-title{font-size:12px;font-weight:700;color:var(--text);letter-spacing:-.01em;line-height:1.3}
+.ps-card-sub{font-size:8px;color:var(--text-dim);margin-top:2px}
+.ps-btns{display:flex;gap:5px;margin-top:8px}
+.ps-btn{flex:1;padding:5px 0;border-radius:999px;font-size:8px;font-weight:700;text-align:center;border:none;cursor:default}
+.ps-btn.primary{background:linear-gradient(135deg,#FF2D78,#9B5DE5);color:#fff}
+.ps-btn.ghost{background:transparent;border:1.5px solid rgba(155,93,229,0.2);color:var(--text-dim)}
+.ps-pb{
+  margin-top:8px;padding:7px 10px;border-radius:12px;
+  background:var(--gold-light);border:1px solid rgba(245,158,11,0.2);
+  display:flex;align-items:center;gap:8px;
+}
+.ps-pb-badge{
+  width:22px;height:22px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,#F59E0B,#D97706);
+  display:flex;align-items:center;justify-content:center;font-size:10px;
+}
+.ps-pb-lbl{font-size:7px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(74,40,96,0.5)}
+.ps-pb-name{font-size:11px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.ps-pb-val{font-size:9px;font-weight:600;color:#D97706}
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.ps-mini{
+  padding:7px 8px;border-radius:10px;
+  background:#fff;border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 1px 4px rgba(155,93,229,0.05);
+}
+.ps-mini-icon{font-size:11px;margin-bottom:2px}
+.ps-mini-title{font-size:8px;font-weight:700;color:var(--text)}
+.ps-mini-sub{font-size:7px;color:var(--text-dim)}
+.ps-journal-row{
+  display:flex;flex-direction:column;gap:5px;margin-top:9px;
+}
+.ps-jrow{
+  padding:8px 10px;border-radius:10px;
+  background:#fff;border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 1px 4px rgba(155,93,229,0.05);
+}
+.ps-jrow-title{font-size:9px;font-weight:700;color:var(--text)}
+.ps-jrow-sub{font-size:7px;color:var(--text-dim);margin-top:1px}
+.ps-chart-wrap{
+  margin-top:8px;padding:8px 10px;border-radius:12px;
+  background:#fff;border:1px solid rgba(0,0,0,0.06);
+  box-shadow:0 1px 4px rgba(155,93,229,0.05);
+}
+.ps-chart-lbl{font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(74,40,96,0.4);margin-bottom:4px}
+.ps-chart-val{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.ps-chart-delta{font-size:8px;color:#059669;font-weight:600;margin-left:4px}
+.ps-nav{
+  margin-top:auto;display:flex;
+  border-top:1px solid rgba(0,0,0,0.06);
+  padding:7px 0 10px;background:#fff;
+}
+.ps-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.ps-nav-icon{font-size:13px}
+.ps-nav-lbl{font-size:7px;font-weight:600;color:rgba(74,40,96,0.3)}
+.ps-nav-lbl.active{color:var(--pink)}
+
+/* moments overlay phone */
+.mo-phone-bg{
+  width:100%;height:100%;
+  background:linear-gradient(160deg,#1f1030,#0d0810);
+  position:relative;
+}
+.mo-scrim{position:absolute;bottom:0;left:0;right:0;height:65%;background:linear-gradient(0deg,rgba(0,0,0,0.88) 0%,transparent 100%)}
+.mo-card{
+  position:absolute;bottom:48px;left:12px;right:12px;
+  background:rgba(255,255,255,0.13);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:14px;padding:12px 14px;position:relative;
+}
+.mo-badge{position:absolute;top:-9px;left:12px;background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:7px;padding:3px 8px;font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;gap:3px}
+.mo-stars{position:absolute;top:-18px;right:10px;color:#F59E0B;font-size:11px;line-height:1.9}
+.mo-exercise{font-size:13px;font-weight:800;color:#fff;letter-spacing:.02em;margin-top:6px}
+.mo-sub{font-size:7px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.1em;margin-top:1px}
+.mo-weight{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-top:3px}
+.mo-wm{font-size:8px;color:rgba(255,255,255,0.4);margin-top:3px;font-style:italic}
+
+/* ── SHARED SECTION STYLES ── */
+section{padding:112px 24px;position:relative}
+.section-inner{max-width:1060px;margin:0 auto}
+.s-eye{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);margin-bottom:14px}
+.s-title{font-family:var(--font-serif);font-size:clamp(34px,4.5vw,60px);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--text);margin-bottom:18px}
+.s-title em{font-style:italic;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.s-sub{font-size:clamp(15px,1.7vw,18px);color:var(--text-dim);max-width:500px;line-height:1.7;font-weight:300}
+
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,45,120,0.15),rgba(155,93,229,0.15),transparent)}
+
+/* ── WHY SECTION ── */
+.why-section{background:var(--bg2)}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.why-quotes{margin-top:36px;display:flex;flex-direction:column;gap:14px}
+.why-quote{
+  padding:18px 22px;border-radius:var(--r);
+  background:#fff;border:1px solid var(--border-soft);
+  border-left:3px solid var(--pink);
+  box-shadow:var(--shadow-card);
+}
+.why-quote.purple{border-left-color:var(--purple)}
+.why-quote p{font-size:15px;font-style:italic;color:var(--text);line-height:1.55}
+.why-quote .ctx{font-size:11px;color:var(--text-faint);margin-top:8px;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+
+.why-cards{display:flex;flex-direction:column;gap:16px}
+.why-card{
+  padding:26px 28px;border-radius:var(--r);
+  background:#fff;border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-card);
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  position:relative;overflow:hidden;
+}
+.why-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:0;transition:opacity .25s}
+.why-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--border-pink)}
+.why-card:hover::before{opacity:1}
+.why-card-num{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);letter-spacing:.1em;margin-bottom:8px}
+.why-card-title{font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--text);margin-bottom:8px}
+.why-card-body{font-size:14px;color:var(--text-dim);line-height:1.65;font-weight:300}
+
+/* ── PILLARS ── */
+.pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px}
+.pillar{
+  padding:30px 26px;border-radius:var(--r);
+  background:#fff;border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-card);
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  position:relative;overflow:hidden;
+}
+.pillar::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(255,45,120,0.03) 0%,transparent 60%);pointer-events:none}
+.pillar:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--border-pink)}
+.pillar-icon{
+  width:46px;height:46px;border-radius:14px;
+  background:linear-gradient(135deg,var(--pink-pale),var(--purple-pale));
+  border:1px solid rgba(255,45,120,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:18px;
+}
+.pillar-title{font-family:var(--font-serif);font-size:21px;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:-.01em}
+.pillar-body{font-size:14px;color:var(--text-dim);line-height:1.65;font-weight:300}
+
+/* secondary smaller pillars */
+.pillar-sm{padding:22px 22px}
+.pillar-sm .pillar-icon{width:36px;height:36px;font-size:16px;border-radius:10px;margin-bottom:12px}
+.pillar-sm .pillar-title{font-size:17px;margin-bottom:6px}
+.pillar-sm .pillar-body{font-size:13px}
+
+/* ── MOMENTS ── */
+.moments-section{background:var(--bg2)}
+.moments-layout{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.moments-visual{display:flex;justify-content:center;position:relative}
+.moments-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:340px;height:340px;
+  background:radial-gradient(ellipse,rgba(155,93,229,0.1) 0%,rgba(255,45,120,0.05) 40%,transparent 70%);
+  pointer-events:none;
+}
+.moments-big{
+  width:240px;aspect-ratio:9/19;
+  border-radius:38px;border:1.5px solid rgba(0,0,0,0.08);
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(155,93,229,0.2),0 4px 16px rgba(0,0,0,0.1);
+}
+.style-chips{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+.style-chip{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-radius:var(--r-sm);
+  background:#fff;border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-sm);
+  transition:border-color .2s,box-shadow .2s;cursor:default;
+}
+.style-chip:hover{border-color:var(--border-pink);box-shadow:var(--shadow-card)}
+.style-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.style-name{font-size:13px;font-weight:600;color:var(--text)}
+.style-desc{font-size:12px;color:var(--text-faint)}
+.share-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.share-tag{
+  background:var(--pink-pale);border:1px solid rgba(255,45,120,0.15);
+  border-radius:999px;padding:5px 14px;font-size:13px;color:var(--pink);font-weight:500;
+}
+
+/* ── OVERLAY EXPORT ── */
+.overlay-section{background:var(--bg3)}
+.overlay-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center}
+.overlay-phones{display:flex;gap:14px;justify-content:center;align-items:flex-end}
+.op{
+  width:128px;aspect-ratio:9/19;border-radius:28px;
+  border:1px solid rgba(0,0,0,0.08);overflow:hidden;
+  background:#0d0810;flex-shrink:0;
+  box-shadow:0 16px 40px rgba(0,0,0,0.2),0 4px 12px rgba(0,0,0,0.1);
+}
+.op.center{
+  width:148px;transform:translateY(-16px);
+  border-color:rgba(155,93,229,0.3);
+  box-shadow:0 24px 56px rgba(155,93,229,0.25),0 4px 16px rgba(0,0,0,0.15);
+}
+.op-screen{width:100%;height:100%;position:relative;overflow:hidden}
+.op-photo-dark{position:absolute;inset:0;background:linear-gradient(160deg,#1f1030,#0d0810)}
+.op-scrim{position:absolute;bottom:0;left:0;right:0;height:72%;background:linear-gradient(0deg,rgba(0,0,0,0.92) 0%,transparent 100%)}
+.op-stats-content{position:absolute;bottom:0;left:0;right:0;padding:10px}
+.op-title{font-size:12px;font-weight:800;color:#fff;letter-spacing:-.01em;text-shadow:0 2px 8px rgba(0,0,0,0.8)}
+.op-stats{display:flex;gap:8px;margin-top:5px}
+.op-stat-lbl{font-size:5.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+.op-stat-val{font-size:9px;font-weight:700;color:#fff}
+.op-gb{display:inline-flex;align-items:center;gap:3px;background:rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.22);border-radius:999px;padding:2px 7px;font-size:6px;font-weight:700;color:#fff;margin-top:4px}
+.op-logo{font-size:6px;color:rgba(255,255,255,0.4);font-style:italic;margin-top:3px}
+.op-minimal{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px}
+.op-min-badge{background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:6px;padding:3px 7px;font-size:7px;font-weight:700;color:#fff;margin-bottom:7px}
+.op-min-sparkles{position:absolute;top:10px;right:8px;font-size:9px;color:#F59E0B;line-height:2}
+.op-min-title{font-size:14px;font-weight:800;color:#fff;text-align:center;text-shadow:0 2px 12px rgba(0,0,0,0.9);letter-spacing:.01em}
+.op-min-sub{font-size:7px;color:rgba(255,255,255,0.45);letter-spacing:.1em;text-transform:uppercase;margin:2px 0}
+.op-min-val{font-size:20px;font-weight:800;color:#fff;text-align:center;text-shadow:0 2px 12px rgba(0,0,0,0.9)}
+.op-min-logo{font-size:6px;color:rgba(255,255,255,0.35);margin-top:5px;font-style:italic}
+.op-transparent{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 6px,transparent 6px,transparent 12px)}
+.op-t-card{background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.22);border-radius:10px;padding:9px 11px;width:84%}
+.op-t-badge{font-size:6px;font-weight:700;color:#F59E0B;margin-bottom:3px}
+.op-t-title{font-size:9px;font-weight:800;color:#fff;letter-spacing:.01em}
+.op-t-sub{font-size:5.5px;color:rgba(255,255,255,0.45);letter-spacing:.08em;text-transform:uppercase;margin:1px 0}
+.op-t-val{font-size:13px;font-weight:800;color:#fff}
+.op-t-logo{font-size:5.5px;color:rgba(255,255,255,0.35);margin-top:2px;font-style:italic}
+
+.feat-list{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.feat-row{display:flex;align-items:flex-start;gap:14px}
+.feat-icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--pink-pale),var(--purple-pale));border:1px solid rgba(155,93,229,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;margin-top:2px}
+.feat-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px}
+.feat-desc{font-size:13px;color:var(--text-dim);line-height:1.6;font-weight:300}
+
+/* ── THEMES ── */
+.themes-section{background:var(--bg2)}
+.themes-strip{display:flex;gap:14px;margin-top:48px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.themes-strip::-webkit-scrollbar{display:none}
+.theme-sw{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer}
+.theme-dot{width:64px;height:64px;border-radius:20px;border:2px solid rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.08);transition:transform .2s,box-shadow .2s}
+.theme-dot:hover{transform:scale(1.1);box-shadow:0 8px 24px rgba(155,93,229,0.2)}
+.theme-lbl{font-size:11px;color:var(--text-dim);font-weight:500;font-family:var(--font-mono)}
+
+/* ── VOICE ── */
+.voice-section{text-align:center}
+.voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px;text-align:left}
+.voice-card{
+  padding:28px;border-radius:var(--r);
+  background:#fff;border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-card);
+  position:relative;overflow:hidden;
+}
+.voice-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at bottom right,rgba(155,93,229,0.04) 0%,transparent 60%);pointer-events:none}
+.voice-mark{font-family:var(--font-serif);font-size:52px;line-height:.9;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px;display:block;font-style:italic}
+.voice-text{font-size:16px;color:var(--text);line-height:1.55;font-style:italic;font-weight:400}
+.voice-ctx{font-size:11px;color:var(--text-faint);margin-top:14px;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── FAQ ── */
+.faq-section{background:var(--bg2)}
+.faq-list{display:flex;flex-direction:column;max-width:680px;margin-top:48px}
+.faq-item{border-bottom:1px solid var(--border-soft);padding:22px 0;cursor:pointer}
+.faq-item:first-child{border-top:1px solid var(--border-soft)}
+.faq-q{display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:16px;font-weight:600;color:var(--text)}
+.faq-arrow{font-size:18px;color:var(--text-faint);transition:transform .3s;flex-shrink:0}
+.faq-a{font-size:14px;color:var(--text-dim);line-height:1.7;font-weight:300;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease}
+.faq-item.open .faq-a{max-height:200px;padding-top:14px}
+.faq-item.open .faq-arrow{transform:rotate(45deg);color:var(--pink)}
+
+/* ── CTA ── */
+.cta-section{
+  text-align:center;padding:120px 24px 160px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+}
+.cta-section::before{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:700px;height:400px;
+  background:radial-gradient(ellipse,rgba(255,45,120,0.07) 0%,rgba(155,93,229,0.05) 40%,transparent 70%);
+  pointer-events:none;
+}
+.cta-title{font-family:var(--font-serif);font-size:clamp(42px,7vw,92px);font-weight:900;font-style:italic;letter-spacing:-.04em;line-height:.94;margin-bottom:20px;color:var(--text)}
+.cta-title span.grad{background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-sub{font-size:18px;color:var(--text-dim);max-width:400px;margin:0 auto 48px;font-weight:300;line-height:1.6}
+.platform-note{font-size:12px;color:var(--text-faint);font-family:var(--font-mono);letter-spacing:.04em;margin-top:14px}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border-soft);
+  padding:56px 48px 24px;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;
+  background:#fff;
+}
+.footer-col .footer-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);margin-bottom:14px}
+.footer-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-list a{color:var(--text-dim);text-decoration:none;font-size:13px;transition:color .2s}
+.footer-list a:hover{color:var(--pink)}
+.footer-logo{font-family:var(--font-serif);font-size:24px;font-weight:800;font-style:italic;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.footer-tag{font-size:13px;color:var(--text-dim);line-height:1.6;max-width:320px;font-weight:300}
+.footer-socials{display:flex;gap:8px;margin-top:18px}
+.footer-socials a{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--pink-pale);border:1px solid rgba(255,45,120,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--pink);
+  text-decoration:none;transition:transform .2s,background .2s;
+}
+.footer-socials a:hover{transform:translateY(-2px);background:#fff}
+.footer-bottom{
+  grid-column:1 / -1;border-top:1px solid var(--border-soft);
+  padding-top:20px;margin-top:16px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+}
+.footer-copy{font-size:12px;color:var(--text-faint);font-family:var(--font-mono)}
+.footer-copy em{font-style:italic;color:var(--text-dim)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.18s}.d3{transition-delay:.26s}.d4{transition-delay:.34s}
+
+/* ── HOW IT WORKS ── */
+.how-section{}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px;position:relative}
+.how-steps::before{
+  content:'';position:absolute;top:36px;left:8%;right:8%;height:1px;
+  background:repeating-linear-gradient(90deg,rgba(255,45,120,0.22) 0 8px,transparent 8px 16px);
+  z-index:0;
+}
+.how-step{position:relative;z-index:1;text-align:left}
+.how-num{
+  width:72px;height:72px;border-radius:50%;
+  background:#fff;border:1.5px solid var(--border-pink);
+  box-shadow:var(--shadow-card);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-style:italic;font-weight:800;font-size:32px;
+  background-clip:padding-box;color:transparent;
+  background-image:var(--grad-text);-webkit-background-clip:text;background-clip:text;
+  margin-bottom:24px;
+}
+.how-num span{background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.how-step h3{font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:-.01em}
+.how-step p{font-size:14px;color:var(--text-dim);line-height:1.65;font-weight:300;max-width:280px}
+.how-tag{display:inline-block;margin-top:14px;font-family:var(--font-mono);font-size:11px;color:var(--pink);letter-spacing:.06em;text-transform:uppercase;background:var(--pink-pale);padding:4px 10px;border-radius:999px}
+
+/* ── ACTIVITIES ── */
+.activities-section{background:var(--bg3)}
+.activities-grid{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:48px;
+}
+.activity{
+  padding:22px 14px 18px;border-radius:18px;
+  background:#fff;border:1px solid var(--border-soft);
+  text-align:center;transition:transform .25s,border-color .25s,box-shadow .25s;
+  box-shadow:var(--shadow-sm);
+}
+.activity:hover{transform:translateY(-3px);border-color:var(--border-pink);box-shadow:var(--shadow-card)}
+.activity-emoji{font-size:28px;margin-bottom:10px;display:block;filter:grayscale(0.1)}
+.activity-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.activity-meta{font-size:10px;color:var(--text-faint);font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+
+/* ── ROADMAP ── */
+.roadmap-section{}
+.roadmap-track{
+  margin-top:52px;display:flex;gap:0;position:relative;
+  border-top:2px dashed rgba(155,93,229,0.2);padding-top:0;
+}
+.rm-item{
+  flex:1;position:relative;padding:28px 16px 0;
+  display:flex;flex-direction:column;align-items:flex-start;
+}
+.rm-item::before{
+  content:'';position:absolute;top:-9px;left:16px;width:16px;height:16px;border-radius:50%;
+  background:#fff;border:2px solid var(--text-faint);
+}
+.rm-item.now::before{background:var(--grad);border-color:var(--pink);box-shadow:0 0 0 6px rgba(255,45,120,0.15)}
+.rm-item.next::before{background:var(--purple-pale);border-color:var(--purple)}
+.rm-when{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px}
+.rm-item.now .rm-when{color:var(--pink)}
+.rm-item.next .rm-when{color:var(--purple)}
+.rm-title{font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.01em}
+.rm-desc{font-size:13px;color:var(--text-dim);line-height:1.6;font-weight:300}
+.rm-badge{display:inline-block;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-top:10px}
+.rm-badge.live{background:#D7F6EA;color:#0E7C5A}
+.rm-badge.soon{background:var(--purple-pale);color:var(--purple)}
+.rm-badge.later{background:#F4EEFF;color:var(--text-dim)}
+
+/* ── FOUNDER ── */
+.founder-section{background:var(--bg2)}
+.founder-wrap{
+  max-width:760px;margin:0 auto;
+  background:#fff;border:1px solid var(--border-soft);border-radius:24px;
+  padding:48px 44px;box-shadow:var(--shadow-card);
+  position:relative;overflow:hidden;
+}
+.founder-wrap::before{
+  content:'';position:absolute;top:0;left:0;width:120px;height:120px;
+  background:radial-gradient(circle at top left,rgba(255,45,120,0.06),transparent 70%);
+  pointer-events:none;
+}
+.founder-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);margin-bottom:12px}
+.founder-quote{
+  font-family:var(--font-serif);font-style:italic;font-weight:500;
+  font-size:clamp(20px,2.4vw,28px);line-height:1.45;color:var(--text);
+  letter-spacing:-.01em;
+}
+.founder-quote em{background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic}
+.founder-sig{
+  margin-top:28px;display:flex;align-items:center;gap:14px;
+}
+.founder-ava{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-style:italic;font-weight:800;color:#fff;font-size:20px;
+}
+.founder-meta strong{display:block;font-size:14px;font-weight:700;color:var(--text)}
+.founder-meta span{font-size:12px;color:var(--text-faint);font-family:var(--font-mono)}
+
+/* ── MOMENTS GALLERY ── */
+.moments-gallery{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px;
+}
+.mc{
+  aspect-ratio:9/14;border-radius:18px;overflow:hidden;
+  position:relative;border:1px solid rgba(0,0,0,0.08);
+  box-shadow:0 12px 32px rgba(0,0,0,0.12);
+  transition:transform .3s,box-shadow .3s;
+}
+.mc:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:0 20px 48px rgba(155,93,229,0.2)}
+.mc-bg{position:absolute;inset:0;background:linear-gradient(160deg,#1a3a5c,#0d1f33)}
+.mc-bg.gym{background:linear-gradient(160deg,#2a1a3a,#0d0810)}
+.mc-bg.gray{background:linear-gradient(160deg,#9aa0a8,#7a808a)}
+.mc-bg.run{background:linear-gradient(160deg,#0e3a2a,#051a12)}
+.mc-sparks{position:absolute;inset:0;color:#F59E0B;font-size:11px;pointer-events:none}
+.mc-sparks span{position:absolute}
+.mc-card{
+  position:absolute;inset:auto 14px 28px;
+  background:rgba(255,255,255,0.13);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.22);border-radius:14px;
+  padding:14px 14px 12px;
+}
+.mc-pb{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;color:#fff;margin-bottom:8px}
+.mc-ex{font-size:17px;font-weight:800;color:#fff;letter-spacing:.02em}
+.mc-sub{font-size:9px;color:rgba(255,255,255,0.55);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.mc-val{font-size:24px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-top:4px}
+.mc-date{font-size:9px;color:rgba(255,255,255,0.4);margin-top:4px;font-style:italic}
+.mc-wm{font-size:9px;color:rgba(255,255,255,0.4);margin-top:6px;font-style:italic;text-align:center}
+.mc.gray-style .mc-card{background:rgba(150,150,150,0.55);backdrop-filter:blur(2px)}
+.mc.gray-style .mc-sub,.mc.gray-style .mc-date{color:rgba(255,255,255,0.7)}
+
+/* real screenshot phones */
+.real-phone{
+  background:#0d0810;border-radius:38px;
+  border:1px solid rgba(0,0,0,0.08);
+  overflow:hidden;flex-shrink:0;
+  box-shadow:0 8px 32px rgba(155,93,229,0.12),0 2px 8px rgba(0,0,0,0.08);
+  position:relative;
+}
+.real-phone.mid{
+  border-color:rgba(255,45,120,0.2);
+  transform:translateY(-24px);
+  box-shadow:0 24px 64px rgba(155,93,229,0.22),0 4px 16px rgba(255,45,120,0.12),0 0 0 1px rgba(255,45,120,0.1);
+}
+.real-phone img{display:block;width:100%;height:auto}
+.real-phone-sz{width:222px;aspect-ratio:9/19.5}
+.real-phone-sz.mid-sz{width:252px}
+.real-phone-sz img{width:100%;height:100%;object-fit:cover;object-position:top}
+
+/* ── TOUR (real screens) ── */
+.tour-section{background:var(--bg2)}
+.tour-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;margin-top:48px;align-items:flex-start;
+}
+.tour-card{display:flex;flex-direction:column;gap:14px}
+.tour-phone{
+  width:100%;aspect-ratio:9/19.5;
+  border-radius:28px;overflow:hidden;
+  background:#0d0810;border:1px solid rgba(0,0,0,0.08);
+  box-shadow:0 12px 32px rgba(155,93,229,0.14),0 2px 8px rgba(0,0,0,0.08);
+  transition:transform .3s,box-shadow .3s;
+}
+.tour-phone:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(155,93,229,0.22)}
+.tour-phone img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.tour-meta{padding:0 4px}
+.tour-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);margin-bottom:6px}
+.tour-name{font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-.01em}
+.tour-desc{font-size:13px;color:var(--text-dim);line-height:1.55;font-weight:300}
+
+/* ── ENGINE (muscle map) ── */
+.engine-section{background:var(--bg3);position:relative;overflow:hidden}
+.engine-section::before{
+  content:'';position:absolute;top:50%;right:-5%;width:600px;height:600px;
+  background:radial-gradient(circle,rgba(255,45,120,0.06),transparent 60%);
+  transform:translateY(-50%);pointer-events:none;
+}
+.engine-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:64px;align-items:center}
+.engine-visual{
+  background:#fff;border-radius:24px;padding:32px 28px;
+  border:1px solid var(--border-soft);box-shadow:var(--shadow-card);
+  position:relative;
+}
+.engine-visual-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px}
+.engine-visual-ex{font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.01em;margin-bottom:18px}
+.engine-bars{display:flex;flex-direction:column;gap:10px}
+.engine-bar{display:flex;align-items:center;gap:12px}
+.engine-bar-name{flex:0 0 110px;font-size:13px;font-weight:600;color:var(--text)}
+.engine-bar-track{flex:1;height:10px;background:#F4EEFF;border-radius:999px;overflow:hidden}
+.engine-bar-fill{height:100%;border-radius:999px;background:var(--grad);transition:width 1s ease}
+.engine-bar.sec .engine-bar-fill{background:linear-gradient(90deg,var(--purple-mid),var(--pink-mid));opacity:.7}
+.engine-bar.ter .engine-bar-fill{background:var(--text-faint);opacity:.5}
+.engine-bar-pct{flex:0 0 36px;text-align:right;font-family:var(--font-mono);font-size:11px;color:var(--text-dim)}
+.engine-pillars{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:32px}
+.engine-pill{
+  background:#fff;padding:18px 18px;border-radius:14px;
+  border:1px solid var(--border-soft);box-shadow:var(--shadow-sm);
+}
+.engine-pill-num{font-family:var(--font-serif);font-style:italic;font-size:28px;font-weight:800;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.02em;line-height:1}
+.engine-pill-lbl{font-size:11px;font-family:var(--font-mono);color:var(--text-faint);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.engine-pill-desc{font-size:13px;color:var(--text-dim);margin-top:8px;line-height:1.5;font-weight:300}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:14px 20px}.nav-links{display:none}
+  .why-grid,.moments-layout,.overlay-layout{grid-template-columns:1fr}
+  .pillars-grid,.voice-grid,.how-steps{grid-template-columns:1fr}
+  .activities-grid{grid-template-columns:repeat(3,1fr)}
+  .moments-gallery{grid-template-columns:1fr}
+  .roadmap-track{flex-direction:column;border-top:none;border-left:2px dashed rgba(155,93,229,0.2);padding-left:0}
+  .rm-item{padding:8px 0 24px 28px}
+  .rm-item::before{top:8px;left:-9px}
+  .how-steps::before{display:none}
+  .phone-trio{gap:10px}
+  .tour-grid{grid-template-columns:repeat(2,1fr);gap:24px;max-width:100%}
+  .engine-grid{grid-template-columns:1fr;gap:36px}
+  .ps{width:145px}.ps.mid-sz{width:165px}
+  .real-phone-sz{width:148px}
+  .real-phone-sz.mid-sz{width:168px}
+  footer{grid-template-columns:1fr;gap:32px;padding:48px 24px 24px;text-align:left}
+  .footer-bottom{flex-direction:column;text-align:center;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Logralee</div>
+  <ul class="nav-links">
+    <li><a href="#how">How</a></li>
+    <li><a href="#tour">Tour</a></li>
+    <li><a href="#engine">Engine</a></li>
+    <li><a href="#moments">Moments</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+  <a href="#waitlist" class="nav-pill">Join the Beta</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow"><span class="eyebrow-dot"></span>Beta now live on Android · iOS soon</div>
+
+  <h1 class="hero-headline">
+    A journal for<br>how you <em>actually</em> move.
+  </h1>
+
+  <p class="hero-sub">Gym, cardio, walks, yoga — all of it. Logralee is where you keep the story without the pressure.</p>
+  <p class="hero-meaning">lograr &nbsp;·&nbsp; Spanish &nbsp;·&nbsp; <em>to achieve, to accomplish</em></p>
+
+  <div class="email-wrap" id="waitlist">
+    <form class="email-form" onsubmit="sub(event,'e1','m1')">
+      <input type="email" id="e1" placeholder="your@email.com" required>
+      <button type="submit">Join the Beta</button>
+    </form>
+    <div class="success-msg" id="m1">✓ You're on the list.</div>
+    <p class="hero-note"><span class="live-dot"></span> <strong id="wl-count">487</strong> on the waitlist · No spam, ever.</p>
+  </div>
+
+  <!-- PHONES -->
+  <div class="phone-trio">
+
+    <!-- Left: Progress -->
+    <div class="real-phone">
+      <div class="real-phone-sz"><img src="assets/screen-progress.jpg" alt="Progress screen showing Squats PB 350 lbs, weight chart, cycle tracking" loading="lazy"></div>
+    </div>
+
+    <!-- Center: Home -->
+    <div class="real-phone mid">
+      <div class="real-phone-sz mid-sz"><img src="assets/screen-home.jpg" alt="Logralee home screen, good evening Osvaldo, 3 day streak" loading="lazy"></div>
+    </div>
+
+    <!-- Right: PB celebration -->
+    <div class="real-phone">
+      <div class="real-phone-sz"><img src="assets/screen-pb.jpg" alt="New Personal Best modal with confetti for Squats 350 lbs" loading="lazy"></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHY -->
+<section class="why-section" id="why">
+  <div class="section-inner">
+    <div class="why-grid">
+      <div>
+        <p class="s-eye reveal">Why Logralee</p>
+        <h2 class="s-title reveal">Show up.<br>Log it.<br><em>Keep the story.</em></h2>
+        <p class="s-sub reveal">Most fitness apps feel like a report card. Logralee feels like a diary. The habit matters more than the spreadsheet.</p>
+        <div class="why-quotes reveal">
+          <div class="why-quote">
+            <p>"You showed up. That's the whole thing."</p>
+            <div class="ctx">After logging any session</div>
+          </div>
+          <div class="why-quote purple">
+            <p>"Rest days are part of the plan too. You're still in it."</p>
+            <div class="ctx">When no routine is scheduled</div>
+          </div>
+        </div>
+      </div>
+      <div class="why-cards">
+        <div class="why-card reveal">
+          <div class="why-card-num">01</div>
+          <div class="why-card-title">No shame, no pressure</div>
+          <div class="why-card-body">Quiet weeks aren't failures. The app doesn't punish gaps — it celebrates the next session just as warmly as the first.</div>
+        </div>
+        <div class="why-card reveal d1">
+          <div class="why-card-num">02</div>
+          <div class="why-card-title">Flexible enough for real life</div>
+          <div class="why-card-body">Log a gym session, a long walk, a yoga class, or a run. You don't need perfect numbers — you just need to show up.</div>
+        </div>
+        <div class="why-card reveal d2">
+          <div class="why-card-num">03</div>
+          <div class="why-card-title">Your story, not a leaderboard</div>
+          <div class="why-card-body">Progress lives in your journal, not rankings. Browse your history, spot your patterns, feel the momentum build.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-inner">
+    <p class="s-eye reveal">How it works</p>
+    <h2 class="s-title reveal">Three taps, one habit.<br><em>That's the whole thing.</em></h2>
+    <div class="how-steps">
+      <div class="how-step reveal">
+        <div class="how-num"><span>01</span></div>
+        <h3>Open</h3>
+        <p>Logralee greets you by name. If today has a routine, it's already loaded. If not, the door is still wide open.</p>
+        <span class="how-tag">~5 seconds</span>
+      </div>
+      <div class="how-step reveal d1">
+        <div class="how-num"><span>02</span></div>
+        <h3>Log</h3>
+        <p>Tap sets, drop a note, snap a photo, mark a walk. Use as much or as little structure as you want — it bends to you.</p>
+        <span class="how-tag">Mid-session friendly</span>
+      </div>
+      <div class="how-step reveal d2">
+        <div class="how-num"><span>03</span></div>
+        <h3>Keep</h3>
+        <p>Everything goes into your journal. Browse weeks, find your PRs, replay your story. No streaks shaming you for skipping.</p>
+        <span class="how-tag">Yours forever</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ACTIVITIES -->
+<section class="activities-section" id="activities">
+  <div class="section-inner">
+    <p class="s-eye reveal">What counts</p>
+    <h2 class="s-title reveal">Movement, broadly defined.<br><em>Log all of it.</em></h2>
+    <p class="s-sub reveal">No gatekeeping what's "real" training. If it felt like effort, it counts.</p>
+    <div class="activities-grid">
+      <div class="activity reveal"><span class="activity-emoji">🏋️</span><div class="activity-name">Strength</div><div class="activity-meta">sets · reps · load</div></div>
+      <div class="activity reveal"><span class="activity-emoji">🏃</span><div class="activity-name">Running</div><div class="activity-meta">distance · time</div></div>
+      <div class="activity reveal"><span class="activity-emoji">🚶</span><div class="activity-name">Walks</div><div class="activity-meta">duration · route</div></div>
+      <div class="activity reveal"><span class="activity-emoji">🧘</span><div class="activity-name">Yoga</div><div class="activity-meta">duration · feel</div></div>
+      <div class="activity reveal"><span class="activity-emoji">🚴</span><div class="activity-name">Cycling</div><div class="activity-meta">distance · time</div></div>
+      <div class="activity reveal"><span class="activity-emoji">🏊</span><div class="activity-name">Swimming</div><div class="activity-meta">laps · time</div></div>
+      <div class="activity reveal d1"><span class="activity-emoji">🤸</span><div class="activity-name">Mobility</div><div class="activity-meta">stretches · feel</div></div>
+      <div class="activity reveal d1"><span class="activity-emoji">🥊</span><div class="activity-name">Combat</div><div class="activity-meta">rounds · type</div></div>
+      <div class="activity reveal d1"><span class="activity-emoji">🥾</span><div class="activity-name">Hiking</div><div class="activity-meta">elevation · time</div></div>
+      <div class="activity reveal d1"><span class="activity-emoji">⛹️</span><div class="activity-name">Pickup</div><div class="activity-meta">sport · duration</div></div>
+      <div class="activity reveal d2"><span class="activity-emoji">💃</span><div class="activity-name">Dance</div><div class="activity-meta">class · session</div></div>
+      <div class="activity reveal d2"><span class="activity-emoji">📝</span><div class="activity-name">Just a note</div><div class="activity-meta">words only</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOUR -->
+<section class="tour-section" id="tour">
+  <div class="section-inner">
+    <p class="s-eye reveal">A look inside</p>
+    <h2 class="s-title reveal">Five screens.<br><em>One calm app.</em></h2>
+    <p class="s-sub reveal">Real screens from the Android beta — not mockups.</p>
+    <div class="tour-grid">
+      <div class="tour-card reveal">
+        <div class="tour-phone"><img src="assets/screen-home.jpg" alt="Home screen with greeting and streak" loading="lazy"></div>
+        <div class="tour-meta">
+          <div class="tour-tag">Home</div>
+          <div class="tour-name">Your day, gently framed</div>
+          <div class="tour-desc">Streak, today's plan, capture a moment — nothing demanding.</div>
+        </div>
+      </div>
+      <div class="tour-card reveal d1">
+        <div class="tour-phone"><img src="assets/screen-log.jpg" alt="Log screen with exercise search and capture" loading="lazy"></div>
+        <div class="tour-meta">
+          <div class="tour-tag">Log</div>
+          <div class="tour-name">Find anything, fast</div>
+          <div class="tour-desc">Browse by muscle, search, or create your own. Capture is one tap.</div>
+        </div>
+      </div>
+      <div class="tour-card reveal d2">
+        <div class="tour-phone"><img src="assets/screen-journal.jpg" alt="Journal screen with sessions across week" loading="lazy"></div>
+        <div class="tour-meta">
+          <div class="tour-tag">Journal</div>
+          <div class="tour-name">Your story, week by week</div>
+          <div class="tour-desc">Sessions, Moments, Progress, and Insights — all under one tab.</div>
+        </div>
+      </div>
+      <div class="tour-card reveal d3">
+        <div class="tour-phone"><img src="assets/screen-progress.jpg" alt="Progress screen with PB, weight chart, cycle" loading="lazy"></div>
+        <div class="tour-meta">
+          <div class="tour-tag">Progress</div>
+          <div class="tour-name">PRs, weight, cycle</div>
+          <div class="tour-desc">Strength trends, body weight, cycle phase — the full picture in one scroll.</div>
+        </div>
+      </div>
+      <div class="tour-card reveal d4">
+        <div class="tour-phone"><img src="assets/screen-routines.jpg" alt="Routines screen with saved templates and plan builder" loading="lazy"></div>
+        <div class="tour-meta">
+          <div class="tour-tag">Routines</div>
+          <div class="tour-name">Templates that fit your week</div>
+          <div class="tour-desc">Save plans, rerun sessions, or let AI draft from your goals.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <p class="s-eye reveal">What it does</p>
+    <h2 class="s-title reveal">Everything you need.<br><em>Nothing you don't.</em></h2>
+    <p class="s-sub reveal">Built around three ideas — log it, see it, repeat it.</p>
+    <div class="pillars-grid">
+      <div class="pillar reveal">
+        <div class="pillar-icon">📝</div>
+        <div class="pillar-title">Log anything</div>
+        <div class="pillar-body">Strength sets, cardio, walks, yoga — one place for all of it. Fast enough that you'll actually open it mid-session.</div>
+      </div>
+      <div class="pillar reveal d1">
+        <div class="pillar-icon">📈</div>
+        <div class="pillar-title">See your progress</div>
+        <div class="pillar-body">Strength trends, personal bests, consistency streaks, muscle zone balance. Your effort over time, not just today's numbers.</div>
+      </div>
+      <div class="pillar reveal d2">
+        <div class="pillar-icon">↩</div>
+        <div class="pillar-title">Build routines</div>
+        <div class="pillar-body">Save templates, run sessions, or let AI generate a plan from your goals. Repetition becomes effortless when the plan is already there.</div>
+      </div>
+    </div>
+    <div class="pillars-grid" style="margin-top:14px">
+      <div class="pillar pillar-sm reveal">
+        <div class="pillar-icon">🎯</div>
+        <div class="pillar-title">Smart coaching</div>
+        <div class="pillar-body">Optional in-session cues. Form tips, deload reminders, PR pacing — on your terms.</div>
+      </div>
+      <div class="pillar pillar-sm reveal d1">
+        <div class="pillar-icon">🌙</div>
+        <div class="pillar-title">Cycle-aware training</div>
+        <div class="pillar-body">Routine suggestions that adapt to your cycle phases. Your body changes — your plan should too.</div>
+      </div>
+      <div class="pillar pillar-sm reveal d2">
+        <div class="pillar-icon">🎨</div>
+        <div class="pillar-title">10 themes</div>
+        <div class="pillar-body">Forest, Lavender, Cosmic, Cotton Candy and more. Pick your look on day one.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ENGINE -->
+<section class="engine-section" id="engine">
+  <div class="section-inner">
+    <div class="engine-grid">
+      <div>
+        <p class="s-eye reveal">Under the hood</p>
+        <h2 class="s-title reveal">A real <em>muscle engine.</em></h2>
+        <p class="s-sub reveal">Every exercise in Logralee is mapped to the muscles it actually works — prime movers, synergists, stabilizers. The kind of detail strength coaches care about, exposed in a UI that doesn't yell.</p>
+        <div class="engine-pillars reveal">
+          <div class="engine-pill">
+            <div class="engine-pill-num">500+</div>
+            <div class="engine-pill-lbl">Exercises</div>
+            <div class="engine-pill-desc">Every standard lift, machine, and bodyweight move — plus your own custom ones.</div>
+          </div>
+          <div class="engine-pill">
+            <div class="engine-pill-num">40+</div>
+            <div class="engine-pill-lbl">Muscle groups</div>
+            <div class="engine-pill-desc">From quads and lats down to specific heads — rectus femoris vs. vastus, long-head triceps vs. lateral.</div>
+          </div>
+          <div class="engine-pill">
+            <div class="engine-pill-num">3</div>
+            <div class="engine-pill-lbl">Roles per lift</div>
+            <div class="engine-pill-desc">Primary, secondary, stabilizer. Insights know the difference — so does your volume balance.</div>
+          </div>
+          <div class="engine-pill">
+            <div class="engine-pill-num">100%</div>
+            <div class="engine-pill-lbl">Local-first</div>
+            <div class="engine-pill-desc">The whole engine runs on-device. No round-trips, no waiting on a server to tell you what you trained.</div>
+          </div>
+        </div>
+      </div>
+      <div class="engine-visual reveal">
+        <div class="engine-visual-lbl">Exercise breakdown</div>
+        <div class="engine-visual-ex">Back Squat</div>
+        <div class="engine-bars">
+          <div class="engine-bar"><div class="engine-bar-name">Quadriceps</div><div class="engine-bar-track"><div class="engine-bar-fill" style="width:95%"></div></div><div class="engine-bar-pct">95%</div></div>
+          <div class="engine-bar"><div class="engine-bar-name">Glutes</div><div class="engine-bar-track"><div class="engine-bar-fill" style="width:88%"></div></div><div class="engine-bar-pct">88%</div></div>
+          <div class="engine-bar sec"><div class="engine-bar-name">Hamstrings</div><div class="engine-bar-track"><div class="engine-bar-fill" style="width:55%"></div></div><div class="engine-bar-pct">55%</div></div>
+          <div class="engine-bar sec"><div class="engine-bar-name">Adductors</div><div class="engine-bar-track"><div class="engine-bar-fill" style="width:48%"></div></div><div class="engine-bar-pct">48%</div></div>
+          <div class="engine-bar ter"><div class="engine-bar-name">Erectors</div><div class="engine-bar-track"><div class="engine-bar-fill" style="width:42%"></div></div><div class="engine-bar-pct">42%</div></div>
+          <div class="engine-bar ter"><div class="engine-bar-name">Core</div><div class="engine-bar-track"><div class="engine-bar-fill" style="width:35%"></div></div><div class="engine-bar-pct">35%</div></div>
+          <div class="engine-bar ter"><div class="engine-bar-name">Calves</div><div class="engine-bar-track"><div class="engine-bar-fill" style="width:22%"></div></div><div class="engine-bar-pct">22%</div></div>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:18px;font-family:var(--font-mono);font-size:10px;color:var(--text-faint);letter-spacing:.06em">
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:var(--grad)"></span>PRIMARY</span>
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:linear-gradient(90deg,var(--purple-mid),var(--pink-mid));opacity:.7"></span>SECONDARY</span>
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:2px;background:var(--text-faint);opacity:.5"></span>STABILIZER</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MOMENTS -->
+<section class="moments-section" id="moments">
+  <div class="section-inner">
+    <div class="moments-layout">
+      <div>
+        <p class="s-eye reveal">Moments</p>
+        <h2 class="s-title reveal">Your best days<br>deserve a<br><em>picture.</em></h2>
+        <p class="s-sub reveal">After a session, open the camera. Add a stat overlay — your PR, your sets, your distance. Save it to your journal or share it anywhere.</p>
+        <p class="s-sub reveal" style="margin-top:12px;font-size:15px">Not a social network. Just your scrapbook of wins, kept exactly where your workout lives.</p>
+        <div class="style-chips reveal">
+          <div class="style-chip"><span class="style-dot" style="background:var(--pink)"></span><div><div class="style-name">7 overlay styles</div><div class="style-desc">Stage, Ground, Spotlight, Minimal, and more</div></div></div>
+          <div class="style-chip"><span class="style-dot" style="background:var(--purple)"></span><div><div class="style-name">5 background looks</div><div class="style-desc">Glass, Dark, Black, White, or none at all</div></div></div>
+          <div class="style-chip"><span class="style-dot" style="background:var(--gold)"></span><div><div class="style-name">PR celebration</div><div class="style-desc">Gold badge, sparkles, confetti — because you earned it</div></div></div>
+        </div>
+        <div class="share-row reveal">
+          <span class="share-tag">📸 Instagram Stories</span>
+          <span class="share-tag">👻 Snapchat</span>
+          <span class="share-tag">🎬 CapCut</span>
+          <span class="share-tag">+ anywhere</span>
+        </div>
+      </div>
+      <div class="moments-visual reveal">
+        <div class="moments-glow"></div>
+        <div class="moments-big" style="border-radius:32px;background:#0d0810">
+          <img src="assets/moment-squats-photo.jpg" alt="Squats 350 lbs PB moment card over a gym photo" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <!-- gallery of styles -->
+    <p class="s-eye reveal" style="margin-top:72px">Gallery</p>
+    <h3 class="reveal" style="font-family:var(--font-serif);font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-.02em;line-height:1.15;color:var(--text);margin-bottom:8px">A few of <em style="font-style:italic;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">yours.</em></h3>
+    <p class="s-sub reveal">Same data, your photo, your style. Stage, ground, spotlight, minimal — pick the look that fits the day.</p>
+    <div class="moments-gallery">
+      <div class="mc reveal" style="overflow:hidden">
+        <img src="assets/moment-squats-photo.jpg" alt="Squats 350 lbs moment card on photo" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" loading="lazy">
+      </div>
+      <div class="mc reveal d1" style="overflow:hidden;background:#a0a4a8">
+        <img src="assets/moment-hack-squats.png" alt="Hack Squats moment card, gray background" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#9aa0a8" loading="lazy">
+      </div>
+      <div class="mc reveal d2">
+        <div class="mc-bg run"></div>
+        <div class="mc-sparks"><span style="top:16%;left:14%">✦</span><span style="top:32%;right:18%">✦</span><span style="top:60%;left:12%">✦</span></div>
+        <div class="mc-card">
+          <span class="mc-pb" style="background:linear-gradient(135deg,#10B981,#059669)">🌿 NEW</span>
+          <div class="mc-ex">-LONG RUN-</div>
+          <div class="mc-sub">Distance</div>
+          <div class="mc-val">6.2 mi</div>
+          <div class="mc-date">May 11, 2026</div>
+          <div class="mc-wm">Logralee</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- OVERLAY EXPORT -->
+<section class="overlay-section">
+  <div class="section-inner">
+    <div class="overlay-layout">
+      <div>
+        <p class="s-eye reveal">Overlay export</p>
+        <h2 class="s-title reveal">Built for<br><em>video too.</em></h2>
+        <p class="s-sub reveal">Export a transparent PNG overlay — no photo, just the stats card — and drop it into CapCut, Instagram, or any video editor. Your reel, your data, your story.</p>
+        <div class="feat-list reveal">
+          <div class="feat-row">
+            <div class="feat-icon">📊</div>
+            <div><div class="feat-title">Stats layout</div><div class="feat-desc">Exercise name, sets, reps, weight, duration, distance — up to 3 stats, your choice.</div></div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon">✨</div>
+            <div><div class="feat-title">Minimal mode</div><div class="feat-desc">Just the exercise and the number, centred, bold. Clean enough for any background.</div></div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon">🎬</div>
+            <div><div class="feat-title">Transparent PNG</div><div class="feat-desc">Save the stats card alone — no photo. Drop it over your own footage in any video app.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-phones reveal">
+        <!-- Stats style -->
+        <div class="op">
+          <div class="op-screen">
+            <div class="op-photo-dark"></div>
+            <div class="op-scrim"></div>
+            <div class="op-stats-content">
+              <div class="op-title">Squat</div>
+              <div class="op-stats">
+                <div><div class="op-stat-lbl">Sets</div><div class="op-stat-val">4</div></div>
+                <div><div class="op-stat-lbl">Reps</div><div class="op-stat-val">5</div></div>
+                <div><div class="op-stat-lbl">Weight</div><div class="op-stat-val">175lb</div></div>
+              </div>
+              <div class="op-gb">🏆 PR</div>
+              <div class="op-logo">Logralee</div>
+            </div>
+          </div>
+        </div>
+        <!-- Minimal style -->
+        <div class="op center">
+          <div class="op-screen">
+            <div class="op-photo-dark" style="background:linear-gradient(160deg,#1a0e28,#0d0810)"></div>
+            <div class="op-minimal">
+              <div class="op-min-sparkles">✦<br>✦</div>
+              <div class="op-min-badge">🏆 PB</div>
+              <div class="op-min-title">-DEADLIFT-</div>
+              <div class="op-min-sub">1RM</div>
+              <div class="op-min-val">225 lbs</div>
+              <div class="op-min-logo">Logralee</div>
+            </div>
+          </div>
+        </div>
+        <!-- Transparent PNG style -->
+        <div class="op">
+          <div class="op-screen">
+            <div class="op-transparent">
+              <div class="op-t-card">
+                <div class="op-t-badge">🏆 PERSONAL BEST</div>
+                <div class="op-t-title">-BENCH PRESS-</div>
+                <div class="op-t-sub">1RM</div>
+                <div class="op-t-val">300 lbs</div>
+                <div class="op-t-logo">Logralee</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- THEMES -->
+<section class="themes-section">
+  <div class="section-inner">
+    <p class="s-eye reveal">Make it yours</p>
+    <h2 class="s-title reveal">10 themes.<br><em>Pick your vibe.</em></h2>
+    <p class="s-sub reveal">Dark and light. Calm and bold. Choose on day one and change whenever you feel like it.</p>
+    <div class="themes-strip reveal">
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#001a00,#00C853)"></div><span class="theme-lbl">Forest</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#0D0D14,#5C6BC0)"></div><span class="theme-lbl">Slate</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#1A0A10,#E91E63)"></div><span class="theme-lbl">Rose</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#140E0A,#FF7043)"></div><span class="theme-lbl">Ember</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#0A1214,#26C6DA)"></div><span class="theme-lbl">Arctic</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#120A1E,#7C3AED)"></div><span class="theme-lbl">Lavender</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#1A0A2E,#C2185B)"></div><span class="theme-lbl">Cosmic</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#FAF6F0,#8D6E63)"></div><span class="theme-lbl">Sand</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#FFF0F5,#FF2D78)"></div><span class="theme-lbl">Bubblegum</span></div>
+      <div class="theme-sw"><div class="theme-dot" style="background:linear-gradient(135deg,#FAFAFF,#B57BFF)"></div><span class="theme-lbl">Cotton Candy</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VOICE -->
+<section class="voice-section">
+  <div class="section-inner">
+    <p class="s-eye reveal" style="text-align:center">The Logralee voice</p>
+    <h2 class="s-title reveal" style="text-align:center;margin:0 auto 16px">A training partner,<br>not a <em>drill sergeant.</em></h2>
+    <p class="s-sub reveal" style="margin:0 auto;text-align:center">Warm. Non-judgmental. Celebrates the small wins honestly.</p>
+    <div class="voice-grid">
+      <div class="voice-card reveal">
+        <span class="voice-mark">"</span>
+        <p class="voice-text">You showed up. That's the whole thing.</p>
+        <p class="voice-ctx">After any session</p>
+      </div>
+      <div class="voice-card reveal d1">
+        <span class="voice-mark">"</span>
+        <p class="voice-text">A new PR. Your body just leveled up.</p>
+        <p class="voice-ctx">Personal best celebration</p>
+      </div>
+      <div class="voice-card reveal d2">
+        <span class="voice-mark">"</span>
+        <p class="voice-text">No pressure. Just you and the weights when you're ready.</p>
+        <p class="voice-ctx">Quiet week, no guilt</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section class="roadmap-section" id="roadmap">
+  <div class="section-inner">
+    <p class="s-eye reveal">Where we're headed</p>
+    <h2 class="s-title reveal">An honest <em>roadmap.</em></h2>
+    <p class="s-sub reveal">Built in public, shipped in pieces. Here's what's live, what's next, and what's brewing.</p>
+    <div class="roadmap-track">
+      <div class="rm-item now reveal">
+        <div class="rm-when">May 2026 · Now</div>
+        <div class="rm-title">Android Beta</div>
+        <div class="rm-desc">Logging, journal, routines, Moments overlay export. Local-first, free, stable.</div>
+        <span class="rm-badge live">● Live</span>
+      </div>
+      <div class="rm-item next reveal d1">
+        <div class="rm-when">Coming soon</div>
+        <div class="rm-title">iOS launch</div>
+        <div class="rm-desc">Native port in active dev. Same feature set, native feel. Waitlist gets first invites.</div>
+        <span class="rm-badge soon">In build</span>
+      </div>
+      <div class="rm-item next reveal d1">
+        <div class="rm-when">Coming soon</div>
+        <div class="rm-title">Advanced routines</div>
+        <div class="rm-desc">Mesocycles, goal-specific plans — PR your bench, full-body builds, pure strength blocks. Pick a target, get a program.</div>
+        <span class="rm-badge soon">Designing</span>
+      </div>
+      <div class="rm-item reveal d2">
+        <div class="rm-when">After iOS</div>
+        <div class="rm-title">Cloud sync · accounts</div>
+        <div class="rm-desc">Sign in with Google or Apple, your history follows you everywhere. Powered by Cloudflare — fast, encrypted, optional.</div>
+        <span class="rm-badge later">Planned</span>
+      </div>
+      <div class="rm-item reveal d2">
+        <div class="rm-when">Later</div>
+        <div class="rm-title">Live coaching</div>
+        <div class="rm-desc">Real coaches inside the app for the days you want a human in your corner. Optional, on-demand.</div>
+        <span class="rm-badge later">Exploring</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOUNDER -->
+<section class="founder-section" id="founder">
+  <div class="section-inner">
+    <div class="founder-wrap reveal">
+      <p class="founder-eyebrow">A note from the maker</p>
+      <p class="founder-quote">I tried every fitness app. They all felt like spreadsheets that judged me. I wanted a place that worked like a <em>diary</em> — one that celebrated showing up, not just hitting numbers. So I built it. Logralee is for the days you crushed it and the days you barely made it through the door.</p>
+      <div class="founder-sig">
+        <div class="founder-ava">O</div>
+        <div class="founder-meta">
+          <strong>Osvaldo</strong>
+          <span>Founder · building Logralee in public</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="section-inner">
+    <p class="s-eye reveal">FAQ</p>
+    <h2 class="s-title reveal">Good questions.</h2>
+    <div class="faq-list">
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">Do I need an account to use Logralee?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">Not for the core experience. Your data lives locally on your device. An account will be required for cloud sync when that launches — so your history follows you across devices.</div>
+      </div>
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">Does it work offline?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">Yes. Logralee is local-first. Logging, routines, history, and Moments all work without a connection. Cloud sync is on the roadmap and layers on top, not replaces, the local experience.</div>
+      </div>
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">Android or iOS — which comes first?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">Android launches first. A native iOS port is in active development and planned to follow shortly after. Join the waitlist and we'll tell you the moment your platform is ready.</div>
+      </div>
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">What counts as a workout?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">Anything you want to remember. Strength sessions, cardio, a long walk, yoga, a bike ride — even a stretch session if it felt like effort. Logralee doesn't gatekeep what counts.</div>
+      </div>
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">How does cloud sync work?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">When cloud sync ships, you'll sign in with Google or Apple and your history will sync across devices. It's powered by Cloudflare's edge — fast, encrypted in transit, and optional. Local-first stays the default; the cloud is opt-in.</div>
+      </div>
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">What's the muscle engine you mention?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">Every exercise in Logralee is tagged with the muscles it works — primary movers, secondary, and stabilizers. That's how Insights can tell you "you've under-trained your posterior chain this week" instead of just showing raw volume.</div>
+      </div>
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">Is it free?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">Core logging, journal, routines, and Moments are free. Some deeper analytics features will be part of a premium tier. Free features stay free — we'll be clear about what's what before launch.</div>
+      </div>
+      <div class="faq-item" onclick="faq(this)">
+        <div class="faq-q">What's the Moments overlay export?<span class="faq-arrow">+</span></div>
+        <div class="faq-a">After a session you can take a photo, add a stats overlay, and save or share it. You can also export the overlay alone as a transparent PNG — drop it into CapCut, Instagram, or any video editor over your own footage.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-inner" style="position:relative;z-index:1">
+    <p class="s-eye reveal" style="text-align:center">Early access</p>
+    <h2 class="cta-title reveal"><span class="grad">Achieve it.</span><br><span style="font-size:.62em;color:var(--text-dim);font-weight:700;font-style:normal">Starting with the first log.</span></h2>
+    <p class="cta-sub reveal">Android beta is live. iOS is next. Cloud sync is on the roadmap. Get on the list for your platform.</p>
+    <div class="email-wrap reveal">
+      <form class="email-form" onsubmit="sub(event,'e2','m2')">
+        <input type="email" id="e2" placeholder="your@email.com" required>
+        <button type="submit">Join Waitlist</button>
+      </form>
+      <div class="success-msg" id="m2">✓ You're on the list.</div>
+      <p class="platform-note">Free to download · Free features stay free</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-col footer-brand">
+    <div class="footer-logo">Logralee</div>
+    <p class="footer-tag">A journal for how you actually move. Built with care in 2026.</p>
+    <div class="footer-socials">
+      <a href="#" aria-label="Instagram">IG</a>
+      <a href="#" aria-label="TikTok">TT</a>
+      <a href="#" aria-label="X">X</a>
+      <a href="#" aria-label="Email">✉</a>
+    </div>
+  </div>
+  <div class="footer-col">
+    <div class="footer-h">Product</div>
+    <ul class="footer-list">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#moments">Moments</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <div class="footer-h">Company</div>
+    <ul class="footer-list">
+      <li><a href="#founder">About</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#">Press kit</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <div class="footer-h">Legal</div>
+    <ul class="footer-list">
+      <li><a href="#">Privacy</a></li>
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">Data</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 Logralee &nbsp;·&nbsp; <em>lograr</em> — to achieve.</p>
+    <p class="footer-copy">Cloud sync powered by Cloudflare · Local-first by default</p>
+  </div>
+</footer>
+
+<script>
+function sub(e,iid,mid){
+  e.preventDefault();
+  const inp=document.getElementById(iid);
+  const msg=document.getElementById(mid);
+  if(inp.value){inp.closest('.email-form').style.display='none';msg.style.display='block'}
+}
+function faq(el){
+  const open=el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!open)el.classList.add('open');
+}
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// animate waitlist count up
+const wl=document.getElementById('wl-count');
+if(wl){
+  const target=parseInt(wl.textContent,10);
+  let n=Math.max(0,target-80);
+  wl.textContent=n;
+  const tick=setInterval(()=>{
+    n+=Math.ceil((target-n)/14);
+    if(n>=target){n=target;clearInterval(tick)}
+    wl.textContent=n.toLocaleString();
+  },50);
+}
+</script>
+</body>
+</html>
