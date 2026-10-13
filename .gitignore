@@ -1,0 +1,6 @@
+.DS_Store
+.wrangler/
+node_modules/
+tools/shots/
+
+_to_delete/

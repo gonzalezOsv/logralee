@@ -1,0 +1,16 @@
+# Cloudflare Pages project config for logralee.com
+# Pages reads this file for Functions bindings when it sits at the repo root.
+name = "logralee"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "."
+
+[vars]
+RATE_LIMIT_PER_HOUR = "5"
+
+# D1 binding used by functions/api/waitlist.ts
+# Create the database once:  wrangler d1 create logralee-waitlist
+# then paste the returned database_id below (see BUILD_NOTES.md).
+[[d1_databases]]
+binding = "DB"
+database_name = "logralee-waitlist"
+database_id = "REPLACE_WITH_DATABASE_ID"

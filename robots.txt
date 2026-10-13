@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /joined/
+Sitemap: https://logralee.com/sitemap.xml

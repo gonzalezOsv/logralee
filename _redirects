@@ -1,0 +1,6 @@
+# Old GitHub Pages paths (gonzalezosv.github.io/logralee/…) once that repo redirects here
+/logralee            /          301
+/logralee/*          /:splat    301
+# Legacy anchors from the first placeholder site
+/index.html          /          301
+# logralee.app → logralee.com is a Cloudflare Bulk Redirect / Redirect Rule on the .app zone, not here.
