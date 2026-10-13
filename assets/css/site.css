@@ -136,16 +136,18 @@ html[data-mode="launched"] .prelaunch { display: none !important; }
 /* ---------- hero ---------- */
 .hero { padding: 64px 0 0; text-align: center; overflow: hidden; }
 .hero .wrap { display: flex; flex-direction: column; align-items: center; }
-.hero .h1 { margin-top: 28px; max-width: 900px; }
-.hero .sub { margin-top: 20px; max-width: 600px; font-size: clamp(19px, 1.8vw, 24px); line-height: 1.35; color: var(--text-2); }
+.hero .h1 { margin-top: 28px; max-width: 760px; font-size: clamp(28px, 3.4vw, 44px); font-weight: 600; line-height: 1.12; letter-spacing: -0.025em; }
+.hero .sub { margin-top: 14px; max-width: 600px; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.4; color: var(--text-2); }
 .hero .form, .hero .badges { margin-top: 32px; }
 .hero .note { margin-top: 14px; }
 
 /* picker wheel (signature): CSS keyframes, transform + opacity only, plays twice and rests */
 .picker {
-  font-size: clamp(30px, 4.6vw, 54px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.3em;
+  /* the title: 30px is the ceiling at 360px wide (longest words must fit the band); scales to 80px on desktop */
+  font-size: clamp(30px, 6.4vw, 80px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.3em;
   width: 100%; max-width: 12.4em; min-width: 0; cursor: default;
 }
+.mk { display: inline-block; width: 0.78em; height: 0.95em; margin-right: 0.22em; object-fit: contain; }
 .band {
   position: relative; height: 3.9em; overflow: hidden;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
