@@ -13,4 +13,4 @@ RATE_LIMIT_PER_HOUR = "5"
 [[d1_databases]]
 binding = "DB"
 database_name = "logralee-waitlist"
-database_id = "REPLACE_WITH_DATABASE_ID"
+database_id = "b80e6e65-75e1-4573-989e-8f9d57d85855"
